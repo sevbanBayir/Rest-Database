@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/banks")
+@RequestMapping("/api/user/banks")
 class BankController(private val service: BankService) {
 
     private val banks = service.getBanks()
@@ -33,7 +33,7 @@ class BankController(private val service: BankService) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createBank(@RequestBody bank: Bank): ResponseEntity<Bank> {
+    fun createBank(@RequestBody bank: Bank): Bank {
 
         if (banks.any { it.accountNumber == bank.accountNumber })
             throw IllegalArgumentException("The element with given account number (${bank.accountNumber}) already exists.")
@@ -43,7 +43,9 @@ class BankController(private val service: BankService) {
             trust = bank.trust,
             transactionFee = bank.transactionFee
         )
-        return ResponseEntity.ok(service.createBank(newBank))
+        service.createBank(newBank)
+
+        return newBank
     }
 
     @PatchMapping

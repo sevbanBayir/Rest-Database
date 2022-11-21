@@ -39,10 +39,10 @@ internal class BankControllerTest {
     @Test
     fun `should return single bank with given accountNumber`() {
         //given
-        val accountNumber = 1234
+        val id = 8
 
         //when
-        mockMvc.get("/api/banks/$accountNumber")
+        mockMvc.get("/api/banks/$id")
             .andDo { print() }
             .andExpect {
                 status { isOk() }
@@ -54,10 +54,10 @@ internal class BankControllerTest {
     @Test
     fun `should return NOT FOUND if the given account number is not belong to any account`() {
         //given
-        val accountNumber = "asdasd"
+        val id = 3
 
         //when
-        mockMvc.get("/api/banks/$accountNumber")
+        mockMvc.get("/api/banks/$id")
             .andDo { print() }
             .andExpect { status { isNotFound() } }
     }
@@ -65,7 +65,7 @@ internal class BankControllerTest {
     @Test
     fun `should create new BANK if does not exist`() {
         //given
-        val bank = Bank(4,"kkkk", 2.0, 8)
+        val bank = Bank(id= 17,accountNumber = "fjhgjhyfgkhjuıjkll", trust =  2.0, transactionFee =  8)
 
         //when
         val performPost = mockMvc.post("/api/banks") {
@@ -84,7 +84,7 @@ internal class BankControllerTest {
                 }
             }
 
-        mockMvc.get("/api/banks/${bank.accountNumber}")
-            .andExpect { content { json(objectMapper.writeValueAsString(bank)) } }
+//        mockMvc.get("/api/banks/${bank.id}")
+//            .andExpect { content { json(objectMapper.writeValueAsString(bank)) } }
     }
 }
