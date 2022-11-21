@@ -1,6 +1,6 @@
 package com.example.restdatabase.controller
 
-import com.example.demo.dtos.RegisterDto
+import com.example.demo.dtos.RegisterDTO
 import com.example.restdatabase.dto.Message
 import com.example.restdatabase.dto.LoginDTO
 import com.example.restdatabase.model.User
@@ -28,7 +28,7 @@ class UserController(
         ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
 
     @PostMapping("register")
-    fun register(@RequestBody body: RegisterDto): ResponseEntity<User> {
+    fun register(@RequestBody body: RegisterDTO): ResponseEntity<User> {
 /*        val user = User(name = body.name, email = body.email)
         user.password = body.password
 

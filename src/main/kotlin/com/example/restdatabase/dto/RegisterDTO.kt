@@ -1,6 +1,6 @@
 package com.example.demo.dtos
 
-class RegisterDto {
+class RegisterDTO {
     val name = ""
     val email = ""
     val password = ""

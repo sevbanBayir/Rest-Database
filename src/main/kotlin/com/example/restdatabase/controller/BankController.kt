@@ -2,12 +2,13 @@ package com.example.restdatabase.controller
 
 import com.example.restdatabase.model.Bank
 import com.example.restdatabase.service.BankService
+import io.jsonwebtoken.Jwts
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/user/banks")
+@RequestMapping("/api/login/banks")
 class BankController(private val service: BankService) {
 
     private val banks = service.getBanks()
@@ -21,7 +22,12 @@ class BankController(private val service: BankService) {
         ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
 
     @GetMapping
-    fun getBanks(): Collection<Bank> = service.getBanks()
+    fun getBanks(@CookieValue jwt: String?): ResponseEntity<Any> {
+
+        if (jwt == null)
+            return ResponseEntity.status(401).body("Not authenticated")
+        return ResponseEntity.ok(service.getBanks())
+    }
 
     @GetMapping("/{id}")
     fun getBank(@PathVariable id: Int): Bank {
