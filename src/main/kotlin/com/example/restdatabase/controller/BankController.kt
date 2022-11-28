@@ -8,10 +8,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/login/banks")
+@RequestMapping("/api/banks")
 class BankController(private val service: BankService) {
 
-    private val banks = service.getBanks()
+    private val books = service.getBanks()
 
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNotFound(e: NoSuchElementException): ResponseEntity<String> =
