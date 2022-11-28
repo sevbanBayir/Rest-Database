@@ -1,9 +1,5 @@
 package com.example.restdatabase.datasource
 
-import com.example.restdatabase.model.Bank
-import org.springframework.stereotype.Repository
-import java.util.IllegalFormatCodePointException
-
 /*
 @Repository
 

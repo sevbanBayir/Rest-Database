@@ -1,23 +1,19 @@
 package com.example.restdatabase.controller
 
-import com.example.restdatabase.model.Bank
+import com.example.restdatabase.model.Book
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity.status
-import org.springframework.test.web.client.match.MockRestRequestMatchers.content
-import org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
-import org.springframework.web.servlet.function.RequestPredicates.contentType
 
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class BankControllerTest {
+internal class BookControllerTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -65,12 +61,12 @@ internal class BankControllerTest {
     @Test
     fun `should create new BANK if does not exist`() {
         //given
-        val bank = Bank(id= 17,accountNumber = "fjhgjhyfgkhjuıjkll", trust =  2.0, transactionFee =  8)
+        val book = Book(id= 17,accountNumber = "fjhgjhyfgkhjuıjkll", trust =  2.0, transactionFee =  8)
 
         //when
         val performPost = mockMvc.post("/api/banks") {
             contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(bank)
+            content = objectMapper.writeValueAsString(book)
         }
 
         //then
@@ -80,7 +76,7 @@ internal class BankControllerTest {
                 status { isCreated() }
                 content {
                     contentType(MediaType.APPLICATION_JSON)
-                    json(objectMapper.writeValueAsString(bank))
+                    json(objectMapper.writeValueAsString(book))
                 }
             }
 

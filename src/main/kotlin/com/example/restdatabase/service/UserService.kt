@@ -12,4 +12,6 @@ class UserService (private val userRepo : UserRepository) {
     fun findByEmail(email : String) : User? = userRepo.findByEmail(email)
 
     fun getById(id : Int) : User = userRepo.getById(id)
+
+    fun allUsers() : Collection<User>? = userRepo.findAll()
 }
