@@ -2,14 +2,7 @@ package com.example.restdatabase.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import javax.persistence.CascadeType
-import javax.persistence.Column
-import javax.persistence.ElementCollection
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.OneToMany
+import javax.persistence.*
 
 /*@Entity
 data class User(
@@ -29,27 +22,18 @@ data class User(
         BCryptPasswordEncoder().matches(rawPassword,password)
 }*/
 @Entity
-class User{
+data class User(
+    var name: String = "",
+    var email: String = "",
+    var timestamp : Long = System.currentTimeMillis(),
+    @OneToMany
+    var boughtBooks : MutableList<Book>? = mutableListOf(),
+    @OneToMany
+    val favouriteBooks : MutableList<Book>? = mutableListOf(),
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Int = 0
-
-    @Column
-    var name = ""
-
-    @Column(unique = true)
-    var email = ""
-
-    @Column
-    var timestamp : Long = System.currentTimeMillis()
-
-    @OneToMany(cascade = [CascadeType.ALL])
-    var favoriteBooks : MutableSet<Book> = mutableSetOf()
-
-    @OneToMany(cascade = [CascadeType.ALL])
-    var boughtBooks : MutableSet<Book> = mutableSetOf()
-
-    @Column
+){
     @JsonIgnore
     var password = ""
         get() = field
@@ -57,7 +41,6 @@ class User{
             val passwordEncoder = BCryptPasswordEncoder()
             field = passwordEncoder.encode(value)
         }
-
     fun comparePasswords(password : String) : Boolean {
             print(password)
             print(this.password)

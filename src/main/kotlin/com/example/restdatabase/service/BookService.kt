@@ -16,7 +16,7 @@ class BookService (
 
     fun getBooksByCategory(categoryId : Int) : Collection<Book>? = dataSource.getBooksByCategoryID(categoryId)
 
-    fun createBank(book : Book) : Book = dataSource.save(book)
+    fun createBook(book : Book) : Book = dataSource.save(book)
 
     fun updateBank (book : Book) : Book = dataSource.save(book)
 

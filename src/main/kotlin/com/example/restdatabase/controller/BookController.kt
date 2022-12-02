@@ -1,12 +1,14 @@
 package com.example.restdatabase.controller
 
 import com.example.restdatabase.model.Book
+import com.example.restdatabase.model.User
 import com.example.restdatabase.service.BookService
 import com.example.restdatabase.service.UserService
 import io.jsonwebtoken.Jwts
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.IllegalFormatCodePointException
 import javax.naming.AuthenticationException
 
 @RestController
@@ -28,12 +30,12 @@ class BookController(private val service: BookService, private val userService: 
         ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
 
     @GetMapping()
-    fun getBooks(@CookieValue jwt: String?): ResponseEntity<Any> {
+    fun getBooks(@CookieValue jwt: String?): Collection<Book>{
 
         if (jwt == null)
             throw AuthenticationException("Not authenticated")
 
-        return ResponseEntity.ok(service.getBooksByTimeStamp())
+        return service.getBooksByTimeStamp()
     }
 
     @GetMapping("/{categoryId}")
@@ -45,33 +47,55 @@ class BookController(private val service: BookService, private val userService: 
         return service.getBooksByCategory(categoryId) ?: emptyList()
     }
 
-    @PostMapping("buyBook/{bookId}")
+    @PostMapping("createBook")
+    fun createBook(@RequestBody body : Book) {
+
+        val book = Book()
+        book.name = body.name
+        book.stock = body.stock
+        book.author = body.author
+        book.categoryID = body.categoryID
+        book.pageNumber = body.pageNumber
+
+        service.createBook(book)
+    }
+
+    @PatchMapping("buyBook/{bookId}")
     fun buyBook(@PathVariable bookId : Int, @CookieValue("jwt") jwt : String?) {
+
         if (jwt == null)
             throw AuthenticationException("Not authenticated")
 
-        if (books.any { it.id == bookId })
+        if (!books.any { it.id == bookId })
             throw NoSuchElementException("No such book with given ID")
 
         val userBody = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
         val user = userService.getById(userBody.issuer.toInt())
         val bookToBuy = books.first { it.id == bookId }
-        val stock = books.first { it.id == bookId }.stock
 
-        val list = mutableSetOf(bookToBuy)
-            user.boughtBooks = list
-            books.first { it.id == bookId }.stock -= 1
+        if (bookToBuy.stock > 0) {
+            user.boughtBooks?.add(bookToBuy)
+            bookToBuy.stock -= 1
+        }
+        else throw IllegalArgumentException("The book with given id is out of stock :(")
 
+        service.createBook(bookToBuy)
+        userService.save(user)
     }
 
-    @PostMapping("favBook/{bookId}")
+
+    @PatchMapping("favBook/{bookId}")
     fun favBook(@PathVariable bookId : Int, @CookieValue("jwt") jwt : String?) {
+
         if (jwt == null)
             throw AuthenticationException("Not authenticated")
 
         val userBody = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
         val user = userService.getById(userBody.issuer.toInt())
         val bookToFav = books.first { it.id == bookId }
-        user.favoriteBooks.add(bookToFav)
+
+        user.favouriteBooks?.add(bookToFav)
+
+        userService.save(user)
     }
 }

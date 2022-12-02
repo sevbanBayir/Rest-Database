@@ -63,7 +63,7 @@ class UserController(private val userService: UserService) {
         return ResponseEntity.ok(Message("Succes"))
     }
 
-    @PostMapping("forgotPassword")
+    @PatchMapping("forgotPassword")
     fun recoverPassword(@RequestBody body : LoginDTO) {
         val user = userService.findByEmail(body.email)
             ?: throw NoSuchElementException("There is not a user with given email")
@@ -75,6 +75,7 @@ class UserController(private val userService: UserService) {
         BCryptPasswordEncoder().encode(newPassword)
 
         user.password = newPassword
+        userService.save(user)
 
         //newPasswordu email ile gönderme işlemi
     }
@@ -99,7 +100,7 @@ class UserController(private val userService: UserService) {
     @GetMapping("user/{id}")
     fun user(@PathVariable id : Int): User {
 
-        if (allUser().any { it.id == id })
+        if (!allUser().any { it.id == id })
             throw NoSuchElementException("No user with the given ID")
 
         return userService.getById(id)

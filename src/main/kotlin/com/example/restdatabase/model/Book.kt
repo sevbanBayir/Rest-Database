@@ -1,16 +1,19 @@
 package com.example.restdatabase.model
 
+import java.time.Clock
+import java.time.LocalDate
+import java.util.*
 import javax.persistence.*
 
 @Entity
 data class Book(
+    var categoryID : Int = 0,
+    var name : String = "",
+    var author : String = "",
+    var pageNumber : Int = -1,
+    var stock : Int = 0,
+    var timestamp: LocalDate? = LocalDate.now(Clock.systemDefaultZone()),
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Int = 0,
-    val categoryID : Int = 0,
-    val name : String = "",
-    val author : String = "",
-    val pageNumber : Int = -1,
-    var stock : Int = 0,
-    val timestamp: Long = System.currentTimeMillis()
+    var id: Int? = 0
 )
