@@ -27,8 +27,10 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-
+    implementation ("org.springframework.boot:spring-boot-starter-mail")
+    testImplementation ("org.springframework.boot:spring-boot-starter-test")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
+    annotationProcessor ("org.springframework.boot:spring-boot-configuration-processor")
 }
 
 tasks.withType<KotlinCompile> {

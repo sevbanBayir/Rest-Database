@@ -1,5 +1,5 @@
 package com.example.restdatabase.controller
-
+/*
 import com.example.restdatabase.model.Book
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
@@ -83,4 +83,4 @@ internal class BookControllerTest {
 //        mockMvc.get("/api/banks/${bank.id}")
 //            .andExpect { content { json(objectMapper.writeValueAsString(bank)) } }
     }
-}
+} */

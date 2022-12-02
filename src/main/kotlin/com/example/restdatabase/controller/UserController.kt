@@ -4,6 +4,8 @@ import com.example.demo.dtos.RegisterDTO
 import com.example.restdatabase.dto.Message
 import com.example.restdatabase.dto.LoginDTO
 import com.example.restdatabase.dto.PasswordDTO
+import com.example.restdatabase.email.EmailRequest
+import com.example.restdatabase.email.EmailSenderService
 import com.example.restdatabase.model.User
 import com.example.restdatabase.service.UserService
 import io.jsonwebtoken.Jwts
@@ -19,7 +21,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @RestController
 @RequestMapping("api")
-class UserController(private val userService: UserService) {
+class UserController(
+    private val userService: UserService,
+    private val emailSenderService: EmailSenderService
+) {
 
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNotFound(e: NoSuchElementException): ResponseEntity<String> =
@@ -69,18 +74,25 @@ class UserController(private val userService: UserService) {
             ?: throw NoSuchElementException("There is not a user with given email")
 
 
-        val charPool : List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        val characterSet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-        val newPassword = List(8) { charPool.random() }.joinToString { "" }
-        BCryptPasswordEncoder().encode(newPassword)
+        val random = Random(System.nanoTime())
+        val password = StringBuilder()
 
-        user.password = newPassword
+        for (i in 0 until 8)
+        {
+            val rIndex = random.nextInt(characterSet.length)
+            password.append(characterSet[rIndex])
+        }
+        //BCryptPasswordEncoder().encode(newPassword)
+
+        user.password = password.toString()
         userService.save(user)
 
-        //newPasswordu email ile gönderme işlemi
+        emailSenderService.sendEmail(subject = "Döngü Şifre Değişikliği",password.toString(),body.email)
     }
 
-    @PostMapping("changePassword")
+    @PatchMapping("changePassword")
     fun changePassword(@RequestBody body: PasswordDTO, @CookieValue("jwt") jwt : String?) {
         if (jwt == null)
             throw NoSuchElementException("Not authenticated")
@@ -88,13 +100,14 @@ class UserController(private val userService: UserService) {
         val userBody = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
         val user = userService.getById(userBody.issuer.toInt())
 
-        if (!user.comparePasswords(user.password))
-            throw IllegalArgumentException("Current password is incorrect")
+      //  if (!user.comparePasswords(body.currenPassword))
+       //     throw IllegalArgumentException("Current password is incorrect")
 
         if (body.newPassword == body.confirmPassword) {
-            val encrypted = BCryptPasswordEncoder().encode(body.confirmPassword)
-            user.password = encrypted
+            //val encrypted = BCryptPasswordEncoder().encode(body.confirmPassword)
+            user.password = body.confirmPassword
         }
+        userService.save(user)
     }
 
     @GetMapping("user/{id}")
