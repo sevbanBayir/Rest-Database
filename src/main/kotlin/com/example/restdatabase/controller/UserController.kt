@@ -96,8 +96,8 @@ class UserController(
         val userBody = Jwts.parser().setSigningKey("secret").parseClaimsJws(jwt).body
         val user = userService.getById(userBody.issuer.toInt())
 
-        //  if (!user.comparePasswords(body.currenPassword))
-        //     throw IllegalArgumentException("Current password is incorrect")
+        if (!user.comparePasswords(body.currentPassword))
+            throw IllegalArgumentException("Current password is incorrect")
 
         if (body.newPassword == body.confirmPassword) {
             user.password = body.confirmPassword
