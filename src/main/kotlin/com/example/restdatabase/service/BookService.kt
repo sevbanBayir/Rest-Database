@@ -11,15 +11,13 @@ import org.springframework.stereotype.Service
 class BookService (
     private val dataSource : CRUDRepository
 ) {
-
     fun getBooksByTimeStamp() : Collection<Book> = dataSource.findAll(Sort.by("timestamp").ascending())
 
     fun getBooksByCategory(categoryId : Int) : Collection<Book>? = dataSource.getBooksByCategoryID(categoryId)
 
     fun createBook(book : Book) : Book = dataSource.save(book)
 
-    fun updateBank (book : Book) : Book = dataSource.save(book)
+    fun updateBook (book : Book) : Book = dataSource.save(book)
 
-    fun deleteBank(id : Int) = dataSource.deleteById(id)
-
+    fun deleteBook(id : Int) = dataSource.deleteById(id)
 }

@@ -2,7 +2,6 @@ package com.example.restdatabase.model
 
 import java.time.Clock
 import java.time.LocalDate
-import java.util.*
 import javax.persistence.*
 
 @Entity
