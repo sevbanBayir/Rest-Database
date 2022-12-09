@@ -11,9 +11,11 @@ data class User(
     var email: String = "",
     var timestamp : Long = System.currentTimeMillis(),
     @OneToMany
-    var boughtBooks : MutableList<Book>? = mutableListOf(),
+    var boughtBooks : MutableList<Book> = mutableListOf(),
     @OneToMany
-    val favouriteBooks : MutableList<Book>? = mutableListOf(),
+    val favouriteBooks : MutableList<Book> = mutableListOf(),
+    @ManyToMany
+    var inCart: MutableList<Book> = mutableListOf(),
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Int = 0

@@ -1,15 +1,13 @@
 package com.example.restdatabase.service
 
-import com.example.restdatabase.datasource.CRUDRepository
+import com.example.restdatabase.datasource.BookRepository
 import com.example.restdatabase.model.Book
-import org.springframework.data.domain.Example
-import org.springframework.data.domain.ExampleMatcher
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 
 @Service
 class BookService (
-    private val dataSource : CRUDRepository
+    private val dataSource : BookRepository
 ) {
     fun getBooksByTimeStamp() : Collection<Book> = dataSource.findAll(Sort.by("timestamp").ascending())
 
